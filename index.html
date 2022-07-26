@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Form Validator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/base.css">
+    <script src="https://kit.fontawesome.com/189eab9d1e.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://use.typekit.net/pec7axv.css">
+
+</head>
+
+<body>
+    <article class="page">
+        <section>
+            <div class="form-container">
+                <form class="input-form" id="create-account" action="" method="POST" novalidate>
+                    <div class="input-holder">
+                        <input id="sFirstName" type="text" placeholder="First Name">
+                    </div>
+                    <div class="input-holder">
+                        <input id="sLastName" type="text" placeholder="Last Name">
+                    </div>
+                    <div class="input-holder">
+                        <input id="email" type="text" placeholder="Email">
+                    </div>
+                    <div class="input-holder">
+                        <input id="user-password" type="password" placeholder="Password">
+                        <i id="pw-view" pw-toggle="user-password" class="pw-view-toggle fa-solid fa-eye"></i>
+                    </div>
+                    <div class="input-holder">
+                        <input id="user-confirm-password" type="password" placeholder="Confirm Password">
+                        <i id="confirm-pw-view" pw-toggle="user-confirm-password"
+                            class="pw-view-toggle fa-solid fa-eye"></i>
+                    </div>
+                    <p>Your password must contain:</p>
+                    <ul id="pw-criteria">
+                        <li pw-criteria="1">8 characters minimum</li>
+                        <li pw-criteria="2">One lowercase character</li>
+                        <li pw-criteria="3">One uppercase character</li>
+                        <li pw-criteria="4">One number</li>
+                        <li pw-criteria="5">Passwords match</li>
+                    </ul>
+
+                    <input type="hidden" name="submitOrder" id="submitOrder" value="0" />
+                    <input type="hidden" name="pageSubmits" id="pageSubmits" value="1" />
+                    <button id="account-submit" type="submit">SUBMIT</button>
+                    <div id="loader" class="loading-animation loading-done">
+                        <i class="fa-solid fa-loader"></i>
+                        <p>Creating account...</p>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </article>
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"
+        integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+    <script>
+        //we can use .ajax() to post our form data to an endpoint url param below
+        //then wait for the response back to show the verify email modal, or show errors
+        //this way we can avoid a page refresh - we want as seamless of an experience as possible
+        $("form").on("submit", function (e) {
+            e.preventDefault();
+            //validateForm returns true or false (true if form is valid, false if errors are found)
+            const isValid = formValidateObj.validateForm();
+            //only submit if front-end validation doesn't see any errors
+            if (isValid) {
+                const formData = $(this).serialize();
+                showLoadingAnimation();
+                $.ajax({
+                    type: "POST",
+                    url: "placeFilePathHere",
+                    data: formData,
+                    success: function () {
+                        //modalToShow is defaulted to the #verify-email modal - no need to pass any param
+                        removeLoadingAnimation();
+                        showModal();
+                    },
+                    error: function () {
+                        //call showErrors function - must pass in array of the invalid HTML elements
+                        removeLoadingAnimation();
+                        //showErrors(inputErrorsArray);
+                    }
+                });
+                e.preventDefault();
+                return false;
+            }
+        });
+    </script>
+    <script src="js/app.js"></script>
+    <script src="js/pw.js"></script>
+    <script src="js/info.js"></script>
+    <script src="js/test.js"></script>
+    <script src="js/form.js"></script>
+</body>
+
+</html>
